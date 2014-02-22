@@ -27,7 +27,7 @@ function start(response, postData){
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+	 
-	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA++">Windows (NVDA and Windows Magnifier) or Linux <br>'+
+	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux <br>'+
 	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+	 
 	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
 	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
