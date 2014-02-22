@@ -29,8 +29,8 @@ function start(response, postData){
 	 '<p>For platform A/B scenario:<br>'+	 
 	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA++">Windows (NVDA and Windows Magnifier) or Linux <br>'+
 	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+	 
-	 '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
-	 '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
+	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
+	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
 	 '</p>'+
 	 '<p>For Demos:<br>'+
 	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+	 	 
@@ -84,8 +84,8 @@ function setDeviceinfo(response, postData){
 	 '<p>For platform A/B scenario:<br>'+	 
 	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA++">Windows (NVDA and Windows Magnifier) or Linux <br>'+
 	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+	 
-	 '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
-	 '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
+	 //'<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
+	 //'<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
 	 '</p>'+
 	 '<p>For Demos:<br>'+
 	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+	 	 
@@ -112,29 +112,42 @@ function selectMM(response, postData){
 	var preferences = "";
 	var token = querystring.parse(postData).text;
 	var matchmaker = querystring.parse(postData)["matchmaker"];
+	var status = "";
 
 	// fetch preference set from the preference server
 	// TODO: error message if no user token! 
 	// TODO: if no user token, check if a user is logged in
-	url = "http://localhost:8081/user/" + token;
-	
-	http.get(url, function(res) {
-	  
-	  res.on('data', function(preferencesChunk){
-		preferences += preferencesChunk;
-	  });
-	  
-	  res.on('end', function(){
-		var preferencesObject = JSON.parse(preferences)
-		// sets current matchmaker strategy as preference
-		// ToDo: reset/remove preference object from preference sets
-			preferencesObject['preferences']['http://registry.gpii.org/common/matchMakerType'] = [{ "value": matchmaker}];
-			saveModifiedPreferences(token, preferencesObject['preferences'], response);	
-	  });		  
+	if (token){
+		url = "http://localhost:8081/user/" + token;	
+		http.get(url, function(res) {
+		  
+		  res.on('data', function(preferencesChunk){
+			preferences += preferencesChunk;
+		  });
+		  
+		  res.on('end', function(){
+				var preferencesObject = JSON.parse(preferences)
+				// sets current matchmaker strategy as preference
+				// ToDo: reset/remove preference object from preference sets
+				if(preferencesObject['preferences']){
+					preferencesObject['preferences']['http://registry.gpii.org/common/matchMakerType'] = [{ "value": matchmaker}];
+					saveModifiedPreferences(token, preferencesObject['preferences'], response);	
+				}
+				else{
+					response.writeHead(200, {"Content-Type": "text/html"});
+					response.write("No such user on preference server");
+					response.end();					
+				}
+		  });		  
 
-	}).on('error', function(e) {
-		console.log("Got error on fetching preferences from server: " + e.message);
-	});		
+		}).on('error', function(e) {
+			console.log("Got error on fetching preferences from server: " + e.message);
+		});
+	}else{
+		response.writeHead(200, {"Content-Type": "text/html"});
+		response.write("Oops! No user token specified.");
+		response.end();	
+	}
 };
 
 function saveModifiedPreferences(token, preferencesObject, response) {
@@ -187,8 +200,8 @@ function saveModifiedPreferences(token, preferencesObject, response) {
 		 '<p>For platform A/B scenario:<br>'+	 
 		 '<input type="radio" name="device" value="platformAB_onWindows_NVDA++">Windows (NVDA and Windows Magnifier) or Linux <br>'+
 		 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+	 
-		 '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
-		 '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
+		 //'<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
+		 //'<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
 		 '</p>'+
 		 '<p>For Demos:<br>'+
 		 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+	 	 
