@@ -7,7 +7,8 @@ handle["/"] = requestHandlers.start;
 handle["/start"] = requestHandlers.start;
 handle["/setDeviceinfo"] = requestHandlers.setDeviceinfo;
 handle["/selectMM"] = requestHandlers.selectMM;
+handle["/snapshotToPrefs"] = requestHandlers.snapshotToPrefs;
 
-// injecting the route function of router module into server module: 
+// injecting the route function of router module into server module:
 server.start(router.route, handle);
 
