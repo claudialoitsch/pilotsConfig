@@ -24,6 +24,12 @@ function start(response, postData){
 	 '</p>'+
 	 '<input type="submit" value="Set Matchmaker strategy" />'+
 	 '</form></p>'+
+	 '<h2>Snapshot prefs</h2>'+
+	 '<p>Note: Cloud4all/GPII server must be started to do snapshot<br></p>'+
+	 '<form action="/snapshotToPrefs" method="post">'+
+	 '<p>User token:<br><input name="text" type="text" size="30" maxlength="30"></p>'+
+	 '<input type="submit" value="Snapshot" />'+
+	 '</form></p>'+
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+	 
@@ -107,6 +113,43 @@ function selectMM(response, postData){
 			console.log("Got error on fetching preferences from server: " + e.message);
 		});
 	}else{
+		response.writeHead(200, {"Content-Type": "text/html"});
+		response.write("Oops! No user token specified.");
+		response.end();	
+	}
+};
+
+function snapshotToPrefs(response) {
+	var url = "";
+	var snapshot = "";
+	var token;
+	var matchmaker = querystring.parse(postData)["matchmaker"];
+
+
+	if(querystring.parse(postData).text){
+		token = querystring.parse(postData).text;
+	}
+	
+	if (token){	
+		// do snapshot
+		http.get("http://localhost:8081/snapshot", function(res) {
+
+		  res.on('data', function(preferencesChunk){
+			snapshot += preferencesChunk;
+		  });
+
+		  res.on('end', function(){
+				var snapshot = JSON.parse(snapshot)
+
+				saveModifiedPreferences(token, snapshot, response);	
+
+		  });
+
+		}).on('error', function(e) {
+			console.log("Got error on doing snapshot: " + e.message);
+		});
+
+	} else {
 		response.writeHead(200, {"Content-Type": "text/html"});
 		response.write("Oops! No user token specified.");
 		response.end();	
