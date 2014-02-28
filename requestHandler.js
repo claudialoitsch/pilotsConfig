@@ -14,40 +14,39 @@ function start(response, postData){
 	 '<h2>Select Matchmaker</h2>'+
 	 '<p>Note: Cloud4all/GPII server must be started to select a Matchmaker<br></p>'+
 	 '<form action="/selectMM" method="post">'+
-	 '<p>User token:<br><input name="text" type="text" size="30" maxlength="30"></p>'+
+	 '<p>User token:<br><input name="text" type="text" size="30" maxlength="100"></p>'+
 	 '<p>For auto-configuration scenario:<br>'+
 	 '<input type="radio" name="matchmaker" value="default">Rule-based Matchmaker (without solution selection option)<br>'+
 	 '<input type="radio" name="matchmaker" value="statistical">Statistical Matchmaker<br>'+
 	 '</p>'+
 	 '<p>For demo solution selection scenario:<br>'+
-	 '<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+	 
+	 '<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+
 	 '</p>'+
 	 '<input type="submit" value="Set Matchmaker strategy" />'+
 	 '</form></p>'+
 	 '<h2>Snapshot prefs</h2>'+
-	 '<p>Note: Cloud4all/GPII server must be started to do snapshot<br></p>'+
 	 '<form action="/snapshotToPrefs" method="post">'+
-	 '<p>User token:<br><input name="text" type="text" size="30" maxlength="30"></p>'+
+	 '<p>User token:<br><input name="text" type="text" size="30" maxlength="100">'+
 	 '<input type="submit" value="Snapshot" />'+
-	 '</form></p>'+
+	 '</form></p>	'+
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
-	 '<p>For platform A/B scenario:<br>'+	 
+	 '<p>For platform A/B scenario:<br>'+
 	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux <br>'+
-	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+	 
-	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+	 	 
-	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+	 	 	 
+	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader und magnifier) or Linux <br><br>'+
+	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+
+	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+
 	 '</p>'+
 	 '<p>For Demos:<br>'+
-	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+	 	 
+	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+
 	 '<input type="radio" name="device" value="demo_Maavis">Maavis<br>'+
 	 '<input type="radio" name="device" value="demo_GoogleChrome">Google Chrome<br><br>'+
 	 '<input type="radio" name="device" value="demo_Library">Library<br>'+
-	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+		 
+	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
 	 '</p>'+
 	 '<p>Reset device specification to default:<br>'+
-	 '<input type="radio" name="device" value="installedSolutions">Default<br>'+	 	 
-	 '</p>'+		 
+	 '<input type="radio" name="device" value="installedSolutions">Default<br>'+
+	 '</p>'+
 	 '<input type="submit" value="Set device configuration" />'+
 	 '</form>'+
 	 '</body>'+
@@ -66,7 +65,6 @@ function setDeviceinfo(response, postData){
 	response.writeHead(200, {"Content-Type": "text/html"});
 	response.write("Device information successfully set!");
 	response.end();
-
 }
 
 function selectMM(response, postData){
@@ -77,37 +75,37 @@ function selectMM(response, postData){
 
 
 	if(querystring.parse(postData).text){
-		
+
 		token = querystring.parse(postData).text;
 	}
 	// TODO try teching current user from GPII
 	//console.log("fetch current users from server");
-	
-	url = "http://localhost:8081/user/" + token;
-	
-	if (token){	
-		
+
+	url = "http://preferences.gpii.net/user/" + token;
+
+	if (token){
+
 		// fetch preference set from the preference server
 		http.get(url, function(res) {
-		  
+
 		  res.on('data', function(preferencesChunk){
 			preferences += preferencesChunk;
 		  });
-		  
+
 		  res.on('end', function(){
 				var preferencesObject = JSON.parse(preferences)
 				// sets current matchmaker strategy as preference
 				// ToDo: reset/remove preference object from preference sets
 				if(preferencesObject['preferences']){
 					preferencesObject['preferences']['http://registry.gpii.org/common/matchMakerType'] = [{ "value": matchmaker}];
-					saveModifiedPreferences(token, preferencesObject['preferences'], response);	
+					saveModifiedPreferences(token, preferencesObject['preferences'], "matchmaker successfully selected", response);
 				}
 				else{
 					response.writeHead(200, {"Content-Type": "text/html"});
 					response.write("No such user on preference server");
-					response.end();					
+					response.end();
 				}
-		  });		  
+		  });
 
 		}).on('error', function(e) {
 			console.log("Got error on fetching preferences from server: " + e.message);
@@ -115,11 +113,11 @@ function selectMM(response, postData){
 	}else{
 		response.writeHead(200, {"Content-Type": "text/html"});
 		response.write("Oops! No user token specified.");
-		response.end();	
+		response.end();
 	}
 };
 
-function snapshotToPrefs(response) {
+function snapshotToPrefs(response, postData) {
 	var url = "";
 	var snapshot = "";
 	var token;
@@ -129,19 +127,20 @@ function snapshotToPrefs(response) {
 	if(querystring.parse(postData).text){
 		token = querystring.parse(postData).text;
 	}
-	
-	if (token){	
+
+	if (token) {
+		var data="";
 		// do snapshot
 		http.get("http://localhost:8081/snapshot", function(res) {
 
 		  res.on('data', function(preferencesChunk){
-			snapshot += preferencesChunk;
+			data += preferencesChunk;
 		  });
 
 		  res.on('end', function(){
-				var snapshot = JSON.parse(snapshot)
+				var snapshot = JSON.parse(data)
 
-				saveModifiedPreferences(token, snapshot, response);	
+				saveModifiedPreferences(token, snapshot, "Snapshot saved to preferences server", response);
 
 		  });
 
@@ -152,17 +151,17 @@ function snapshotToPrefs(response) {
 	} else {
 		response.writeHead(200, {"Content-Type": "text/html"});
 		response.write("Oops! No user token specified.");
-		response.end();	
+		response.end();
 	}
 };
 
-function saveModifiedPreferences(token, preferencesObject, response) {
+function saveModifiedPreferences(token, preferencesObject, usrMsg, response) {
 	var data = JSON.stringify(preferencesObject);
 
 	// object of options to indicate where to POST to
 	var post_options = {
-		host: 'localhost',
-		port: '8081',
+		host: 'preferences.gpii.net',
+		port: '80',
 		path: '/user/' + token,
 		method: 'POST',
 		headers: {
@@ -179,16 +178,17 @@ function saveModifiedPreferences(token, preferencesObject, response) {
 		});
 		res.on('end', function(){
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write('Matchmaker successfully selected!');
+			response.write(usrMsg);
 			response.end();
 		});
 	});
 	// writes http request body data; Server replies and response callback 'res' gets activated
 	post_req.write(data);
 	post_req.end();
-	
+
 }
 
 exports.start = start;
 exports.selectMM = selectMM;
 exports.setDeviceinfo = setDeviceinfo;
+exports.snapshotToPrefs = snapshotToPrefs;
