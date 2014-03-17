@@ -1,5 +1,6 @@
 var http = require('http');
 var querystring = require("querystring");
+var fs = require('fs');
 
 function start(response, postData){
 	console.log("Request handler 'start' was called");
@@ -47,6 +48,34 @@ function start(response, postData){
 	 '</p>'+
 	 '<input type="submit" value="Set device configuration" />'+
 	 '</form>'+
+	 '<h2>Proposing a new Solution - Feedback</h2>'+
+	 '<form action="/getFeedback" method="post">'+
+	 '<p>NVDA:<br>'+
+	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackGerman.html">NVDA feedback German<br>'+
+	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackSpanish.html">NVDA feedback Spain<br>'+
+	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackGreek.html">NVDA feedback Greek<br>'+
+	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackEnglish.html">NVDA feedback Englisch<br>'+
+	 '</p>'+
+	 '<p>SuperNova:<br>'+
+	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackGerman.html">SuperNova feedback German<br>'+
+	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackSpanish.html">SuperNova feedback Spain<br>'+
+	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackGreek.html">SuperNova feedback Greek<br>'+
+	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackEnglish.html">SuperNova feedback Englisch<br>'+
+	 '</p>'+
+	 '<p>WebAnywhere:<br>'+
+	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackGerman.html">WebAnywhere feedback German<br>'+
+	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackSpanish.html">WebAnywhere feedback Spain<br>'+
+	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackGreek.html">WebAnywhere feedback Greek<br>'+
+	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackEnglish.html">WebAnywhere feedback Englisch<br>'+
+	 '</p>'+
+	 '<p>ORCA:<br>'+
+	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackGerman.html">ORCA feedback German<br>'+
+	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackSpanish.html">ORCA feedback Spain<br>'+
+	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackGreek.html">ORCA feedback Greek<br>'+
+	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackEnglish.html">ORCA feedback Englisch<br>'+
+	 '</p>'+	 
+	 '<input type="submit" value="Open Feedback Page" />'+
+	 '</form>'+	 
 	 '</body>'+
 	 '</html>';
 	response.writeHead(200, {"Content-Type": "text/html"});
@@ -55,7 +84,6 @@ function start(response, postData){
 }
 
 function setDeviceinfo(response, postData){
-	var fs = require('fs');
 	var device = querystring.parse(postData)["device"];
 	var filePath = 	'../node_modules/universal/testData/deviceReporter/secondPilots/'+ device +'.json' ;
 	fs.createReadStream(filePath).pipe(fs.createWriteStream('../node_modules/universal/testData/deviceReporter/installedSolutions.json'));
@@ -154,6 +182,18 @@ function snapshotToPrefs(response) {
 	});
 };
 
+function getFeedback(response, postData){
+	var file = querystring.parse(postData)['feedback'];
+	fs.readFile('./feedback/'+file, function(err, feedback){
+		if(err){
+			throw err;
+		}
+		response.writeHead(200, {"Content-Type": "text/html"});
+		response.write(feedback);
+		response.end();
+	});
+}
+
 function saveModifiedPreferences(token, preferencesObject, usrMsg, response) {
 	var data = JSON.stringify(preferencesObject);
 
@@ -191,3 +231,4 @@ exports.start = start;
 exports.selectMM = selectMM;
 exports.setDeviceinfo = setDeviceinfo;
 exports.snapshotToPrefs = snapshotToPrefs;
+exports.getFeedback = getFeedback;
