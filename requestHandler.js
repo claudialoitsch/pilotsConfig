@@ -76,8 +76,8 @@ function getJSONRequest (url, callback) {
 		});
 
 		res.on('end', function () {
-			var parsedReply = JSON.parse(reply);
-			callback(parsedReply);
+
+			callback(reply);
 		});
 
 	}).on('error', function(e) {
@@ -100,7 +100,8 @@ function selectMM (response, postData) {
 	getCurrentToken(function (token) {
 		if (token) {
 
-			getPreferences(token, function (preferences) {
+			getPreferences(token, function (reply) {
+				var preferences = JSON.parse(reply);
 				if (preferences && preferences['preferences']) {
 					preferences['preferences']['http://registry.gpii.org/common/matchMakerType'] = [{ "value": matchmaker}];
 					saveModifiedPreferences(token, preferences['preferences'], "matchmaker successfully selected", response);
@@ -124,7 +125,8 @@ function snapshotToPrefs(response) {
 	getCurrentToken(function (token) {
 		if (token) {
 			//if theres a user logged in, get that users preferences
-			getPreferences(token, function (preferences) {
+			getPreferences(token, function (reply) {
+				var preferences = JSON.parse(reply);
 				if (preferences && preferences['preferences']) {
 					//get and add the snapshotted settings to the
 					getJSONRequest("http://localhost:8081/snapshot", function (snapshotted) {
