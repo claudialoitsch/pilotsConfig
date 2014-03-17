@@ -94,6 +94,10 @@ function getPreferences (token, callback) {
 	return getJSONRequest("http://preferences.gpii.net/user/" + token, callback);
 }
 
+function getSnapshot (callback) {
+	return getJSONRequest("http://localhost:8081/snapshot", callback);
+}
+
 function selectMM (response, postData) {
 	var matchmaker = querystring.parse(postData)["matchmaker"];
 
@@ -129,9 +133,10 @@ function snapshotToPrefs(response) {
 				var preferences = JSON.parse(reply);
 				if (preferences && preferences['preferences']) {
 					//get and add the snapshotted settings to the
-					getJSONRequest("http://localhost:8081/snapshot", function (snapshotted) {
+					getSnapshot(function (reply) {
+						var snapshotted = JSON.parse(reply);
 						for (solution in snapshotted) {
-							preferences['preferences'][solution] = snapshotted[solution];
+							preferences['preferences'][solution] = snapshotted[solution];							
 						};
 						saveModifiedPreferences(token, preferences['preferences']	, "Snapshot saved to preferences server", response);
 					});
