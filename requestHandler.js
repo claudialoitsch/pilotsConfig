@@ -28,6 +28,10 @@ function start(response, postData){
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<input type="submit" value="Snapshot" />'+
 	 '</form></p>	'+
+	 '<h2>Log prefs</h2>'+
+	 '<form action="/snapshotToLog" method="post">'+
+	 '<input type="submit" value="Log Prefs" />'+
+	 '</form></p>	'+	 
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+
@@ -152,6 +156,49 @@ function selectMM (response, postData) {
 	});
 };
 
+function snapshotToLog(response) {
+	var data = new Date();
+	var timestamp = data.getDate()+'.'+data.getMonth()+'_time_'+data.getHours()+'.'+data.getMinutes();
+	var path = './logs/';
+	var log = { };
+	//read the token of the currently logged in user
+	getCurrentToken(function (token) {
+		if (token) {
+		
+			getSnapshot(function (reply) {
+				var snapshotted = JSON.parse(reply);
+				log['token'] = token; 
+				log['timestamp'] = timestamp; 
+				log['preferences'] = snapshotted;
+				fs.mkdir(path,function(e){
+					if(!e || (e && e.code === 'EEXIST')){
+						fs.writeFile('./logs/'+token+'_'+timestamp, JSON.stringify(log), function(err) {
+					
+							if(err) {
+								console.log(err);
+								response.end();
+							} else {
+								console.log("Logfile saved!");
+								response.writeHead(200, {"Content-Type": "text/html"});
+								response.write("Log successfully saved in directory pilotsConfig/logs");
+								response.end();
+							}
+						});
+					} else {
+						//debug
+						console.log(e);
+					}
+				});
+			});
+
+		} else {
+			response.writeHead(200, {"Content-Type": "text/html"});
+			response.write("Error on fetching user token");
+			response.end();
+		}
+	});
+};
+
 function snapshotToPrefs(response) {
 	//read the token of the currently logged in user
 	getCurrentToken(function (token) {
@@ -232,3 +279,4 @@ exports.selectMM = selectMM;
 exports.setDeviceinfo = setDeviceinfo;
 exports.snapshotToPrefs = snapshotToPrefs;
 exports.getFeedback = getFeedback;
+exports.snapshotToLog = snapshotToLog;

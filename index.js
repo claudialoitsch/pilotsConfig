@@ -9,6 +9,8 @@ handle["/setDeviceinfo"] = requestHandlers.setDeviceinfo;
 handle["/selectMM"] = requestHandlers.selectMM;
 handle["/snapshotToPrefs"] = requestHandlers.snapshotToPrefs;
 handle["/getFeedback"] = requestHandlers.getFeedback;
+handle["/snapshotToLog"] = requestHandlers.snapshotToLog;
+
 
 
 // injecting the route function of router module into server module:
