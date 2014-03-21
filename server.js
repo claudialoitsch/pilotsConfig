@@ -1,5 +1,5 @@
 /*!
-    GPII @@pilotsConfig
+    GPII pilotsConfig
 
     Copyright 2014 Technische Universität Dresden (TUD)
     Copyright 2014 Raising the Floor - International (RtF)
