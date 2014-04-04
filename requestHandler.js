@@ -16,7 +16,7 @@
     the European Union's Seventh Framework Programme (FP7/2007-2013) 
     under grant agreement no. 289016.
 */
-
+var util = require('util');
 var http = require('http');
 var querystring = require("querystring");
 var fs = require('fs');
@@ -154,6 +154,9 @@ function selectMM (response, postData) {
 
 	getCurrentToken(function (token) {
 		if (token) {
+				token = token.replace(/\s/, "");
+				token = token.replace(/\[\"/, "");
+				token = token.replace(/\"\]/, "");
 
 			getPreferences(token, function (reply) {
 				var preferences = JSON.parse(reply);
