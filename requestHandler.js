@@ -38,9 +38,10 @@ function start(response, postData){
 	 '<input type="radio" name="matchmaker" checked="checked" value="default">Rule-based Matchmaker (without solution selection option)<br>'+
 	 '<input type="radio" name="matchmaker" value="statistical">Statistical Matchmaker<br>'+
 	 '</p>'+
-	 '<p>For demo solution selection scenario:<br>'+
-	 '<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+
-	 '</p>'+
+// 	Remove logging from pilotsConfig
+//	'<p>For demo solution selection scenario:<br>'+
+//	'<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+
+//	'</p>'+
 	 '<input type="submit" value="Set Matchmaker strategy" />'+
 	 '</form></p>'+
 	 '<h2>Snapshot prefs</h2>'+
