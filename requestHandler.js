@@ -64,12 +64,12 @@ function start(response, postData){
 	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+
 	 '<input type="radio" name="device" value="demo_Maavis">Maavis<br>'+
 	 '<input type="radio" name="device" value="demo_GoogleChrome">Google Chrome<br><br>'+
-	 '<input type="radio" name="device" value="demo_Library">Library<br>'+
-	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
+//	 '<input type="radio" name="device" value="demo_Library">Library<br>'+
+//	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
 	 '</p>'+
-	 '<p>Reset device specification to default:<br>'+
-	 '<input type="radio" name="device" value="installedSolutions">Default<br>'+
-	 '</p>'+
+//	 '<p>Reset device specification to default:<br>'+
+//'<input type="radio" name="device" value="installedSolutions">Default<br>'+
+//	 '</p>'+
 	 '<input type="submit" value="Set device configuration" />'+
 	 '</form>'+
 	 '<h2>Proposing a new Solution - Feedback</h2>'+
