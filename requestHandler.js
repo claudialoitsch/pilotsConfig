@@ -48,10 +48,10 @@ function start(response, postData){
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<input type="submit" value="Snapshot" />'+
 	 '</form></p>	'+
-	 '<h2>Log prefs</h2>'+
-	 '<form action="/snapshotToLog" method="post">'+
-	 '<input type="submit" value="Log Prefs" />'+
-	 '</form></p>	'+	 
+	 //'<h2>Log prefs</h2>'+
+	 //'<form action="/snapshotToLog" method="post">'+
+	 //'<input type="submit" value="Log Prefs" />'+
+	 //'</form></p>	'+	 
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+
