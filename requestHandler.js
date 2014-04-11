@@ -226,6 +226,9 @@ function snapshotToPrefs(response) {
 	//read the token of the currently logged in user
 	getCurrentToken(function (token) {
 		if (token) {
+			token = token.replace(/\s/, "");
+			token = token.replace(/\[\"/, "");
+			token = token.replace(/\"\]/, "");
 			//if theres a user logged in, get that users preferences
 			getPreferences(token, function (reply) {
 				var preferences = JSON.parse(reply);
