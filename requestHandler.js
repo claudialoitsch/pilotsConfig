@@ -73,33 +73,30 @@ function start(response, postData){
 	 '<input type="submit" value="Set device configuration" />'+
 	 '</form>'+
 	 '<h2>Proposing a new Solution - Feedback</h2>'+
-	 '<form action="/getFeedback" method="post">'+
 	 '<p>NVDA:<br>'+
-	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackGerman.html">NVDA feedback German<br>'+
-	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackSpanish.html">NVDA feedback Spain<br>'+
-	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackGreek.html">NVDA feedback Greek<br>'+
-	 '<input type="radio" name="feedback" value="NVDA/RBMMFeedbackEnglish.html">NVDA feedback Englisch<br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackGerman.html" target="_blank">NVDA feedback German</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackSpanish.html" target="_blank">NVDA feedback Spain</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackGreek.html" target="_blank">NVDA feedback Greek</a><br>'+	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackEnglish.html" target="_blank">NVDA feedback Englisch</a><br>'+
 	 '</p>'+
 	 '<p>SuperNova:<br>'+
-	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackGerman.html">SuperNova feedback German<br>'+
-	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackSpanish.html">SuperNova feedback Spain<br>'+
-	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackGreek.html">SuperNova feedback Greek<br>'+
-	 '<input type="radio" name="feedback" value="SuperNova/RBMMFeedbackEnglish.html">SuperNova feedback Englisch<br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackGerman.html" target="_blank">SuperNova feedback German</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackSpanish.html" target="_blank">SuperNova feedback Spain</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackGreek.html" target="_blank">SuperNova feedback Greek</a><br>'+	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackEnglish.html" target="_blank">SuperNova feedback Englisch</a><br'+
 	 '</p>'+
 	 '<p>WebAnywhere:<br>'+
-	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackGerman.html">WebAnywhere feedback German<br>'+
-	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackSpanish.html">WebAnywhere feedback Spain<br>'+
-	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackGreek.html">WebAnywhere feedback Greek<br>'+
-	 '<input type="radio" name="feedback" value="WebAnywhere/RBMMFeedbackEnglish.html">WebAnywhere feedback Englisch<br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackGerman.html" target="_blank">WebAnywhere feedback German</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackSpanish.html" target="_blank">WebAnywhere feedback Spain</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackGreek.html" target="_blank">WebAnywhere feedback Greek</a><br>'+	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackEnglish.html" target="_blank">WebAnywhere feedback Englisch</a><br'+	 
 	 '</p>'+
 	 '<p>ORCA:<br>'+
-	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackGerman.html">ORCA feedback German<br>'+
-	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackSpanish.html">ORCA feedback Spain<br>'+
-	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackGreek.html">ORCA feedback Greek<br>'+
-	 '<input type="radio" name="feedback" value="ORCA/RBMMFeedbackEnglish.html">ORCA feedback Englisch<br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackGerman.html" target="_blank">ORCA feedback German</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackSpanish.html" target="_blank">ORCA feedback Spain</a><br>'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackGreek.html" target="_blank">ORCA feedback Greek</a><br>'+	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackEnglish.html" target="_blank">ORCA feedback Englisch</a><br'+	 	 
 	 '</p>'+	 
-	 '<input type="submit" value="Open Feedback Page" />'+
-	 '</form>'+	 
 	 '</body>'+
 	 '</html>';
 	response.writeHead(200, {"Content-Type": "text/html"});
@@ -254,6 +251,7 @@ function snapshotToPrefs(response) {
 		}
 	});
 };
+
 
 function getFeedback(response, postData){
 	var file = querystring.parse(postData)['feedback'];
