@@ -28,7 +28,10 @@ handle["/setDeviceinfo"] = requestHandlers.setDeviceinfo;
 handle["/selectMM"] = requestHandlers.selectMM;
 handle["/snapshotToPrefs"] = requestHandlers.snapshotToPrefs;
 handle["/getFeedback"] = requestHandlers.getFeedback;
-handle["/snapshotToLog"] = requestHandlers.snapshotToLog;
+handle["/logging"] = requestHandlers.logging;
+// outdated logging
+// handle["/snapshotToLog"] = requestHandlers.snapshotToLog;
+
 
 
 

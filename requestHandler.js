@@ -38,7 +38,6 @@ function start(response, postData){
 	 '<input type="radio" name="matchmaker" checked="checked" value="default">Rule-based Matchmaker (without solution selection option)<br>'+
 	 '<input type="radio" name="matchmaker" value="statistical">Statistical Matchmaker<br>'+
 	 '</p>'+
-// 	Remove logging from pilotsConfig
 //	'<p>For demo solution selection scenario:<br>'+
 //	'<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+
 //	'</p>'+
@@ -48,10 +47,10 @@ function start(response, postData){
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<input type="submit" value="Snapshot" />'+
 	 '</form></p>	'+
-	 //'<h2>Log prefs</h2>'+
-	 //'<form action="/snapshotToLog" method="post">'+
-	 //'<input type="submit" value="Log Prefs" />'+
-	 //'</form></p>	'+	 
+	 '<h2>Log prefs</h2>'+
+	 '<form action="/logging" method="post">'+
+	 '<input type="submit" value="Logging" />'+
+	 '</form></p>	'+	 
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+
@@ -175,6 +174,31 @@ function selectMM (response, postData) {
 		}
 	});
 };
+
+function logging(response) {
+	var sys = require('sys');
+	var exec = require('child_process').exec;
+	var path = require('path');
+	
+	console.log ("platform" + process.platform);
+	if(process.platform === 'linux') 
+		var logScript = path.join(process.cwd(), '../linux/LogLocalSettings.sh');
+	
+	else 
+		var logScript = path.join(process.cwd(), '../windows/LogLocalSettings.cmd');
+		
+	fs.exists(logScript, function (exists) {
+		var child = exec(logScript, function (error, stdout, stderr) {
+			console.log ("logging script: " + logScript);
+			console.log ("logging results: " + stdout);
+			
+			response.writeHead(200, {"Content-Type": "text/html"});
+			response.write("logging results: " + stdout+ " Error: " + stderr);
+			response.end();	
+    });	
+	});
+};
+
 
 function snapshotToLog(response) {
 	var data = new Date();
@@ -303,4 +327,6 @@ exports.selectMM = selectMM;
 exports.setDeviceinfo = setDeviceinfo;
 exports.snapshotToPrefs = snapshotToPrefs;
 exports.getFeedback = getFeedback;
-exports.snapshotToLog = snapshotToLog;
+exports.logging = logging;
+// outdated logging
+//exports.snapshotToLog = snapshotToLog;
