@@ -35,7 +35,7 @@ function start(response, postData){
 	 '<p>Note: Cloud4all/GPII server must be started to select a Matchmaker<br></p>'+
 	 '<form action="/selectMM" method="post">'+
 	 '<p>For auto-configuration scenario:<br>'+
-	 '<input type="radio" name="matchmaker" checked="checked" value="default">Rule-based Matchmaker (without solution selection option)<br>'+
+	 '<input type="radio" name="matchmaker" checked="checked" value="flat">Rule-based Matchmaker (without solution selection option)<br>'+
 	 '<input type="radio" name="matchmaker" value="statistical">Statistical Matchmaker<br>'+
 	 '</p>'+
 //	'<p>For demo solution selection scenario:<br>'+
