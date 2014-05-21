@@ -43,14 +43,17 @@ function start(response, postData){
 //	'</p>'+
 	 '<input type="submit" value="Set Matchmaker strategy" />'+
 	 '</form></p>'+
+	 // sanpshot to prefs
 	 '<h2>Snapshot prefs</h2>'+
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<input type="submit" value="Snapshot" />'+
 	 '</form></p>	'+
+	 // log to device
 	 '<h2>Log prefs</h2>'+
 	 '<form action="/logging" method="post">'+
 	 '<input type="submit" value="Logging" />'+
 	 '</form></p>	'+	 
+	 // select device spec
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
 	 '<p>For platform A/B scenario:<br>'+
@@ -62,15 +65,16 @@ function start(response, postData){
 	 '<p>For Demos:<br>'+
 	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+
 	 '<input type="radio" name="device" value="demo_Maavis">Maavis<br>'+
-	 '<input type="radio" name="device" value="demo_GoogleChrome">Google Chrome<br><br>'+
-//	 '<input type="radio" name="device" value="demo_Library">Library<br>'+
+	 '<input type="radio" name="device" value="demo_GoogleChrome">Google Chrome<br>'+
+	 '<input type="radio" name="device" value="demo_Library">WebAnywhere<br>'+
 //	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
 	 '</p>'+
-//	 '<p>Reset device specification to default:<br>'+
-//'<input type="radio" name="device" value="installedSolutions">Default<br>'+
-//	 '</p>'+
+	 '<p>Set device specification to default:<br>'+
+	 '<input type="radio" name="device" value="installedSolutions">Default<br>'+
+	 '</p>'+
 	 '<input type="submit" value="Set device configuration" />'+
 	 '</form>'+
+	 // feedback pages 
 	 '<h2>Proposing a new Solution - Feedback</h2>'+
 	 '<p>NVDA:<br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackGerman.html" target="_blank">NVDA feedback German</a><br>'+
@@ -105,12 +109,19 @@ function start(response, postData){
 
 function setDeviceinfo(response, postData){
 	var device = querystring.parse(postData)["device"];
-	var filePath = 	'../node_modules/universal/testData/deviceReporter/secondPilots/'+ device +'.json' ;
+	if (device == "installedSolutions"){
+		var filePath = 	'./'+ device +'.json' ;
+	}
+	else{
+		
+		var filePath = 	'../node_modules/universal/testData/deviceReporter/secondPilots/'+ device +'.json' ;
+	}
+	
 	fs.createReadStream(filePath).pipe(fs.createWriteStream('../node_modules/universal/testData/deviceReporter/installedSolutions.json'));
 
 	response.writeHead(200, {"Content-Type": "text/html"});
 	response.write("Device information successfully set!");
-	response.end();
+	response.end();	
 }
 
 function getJSONRequest (url, callback) {
