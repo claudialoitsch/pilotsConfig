@@ -125,7 +125,8 @@ function setDeviceinfo(response, postData){
 	fs.createReadStream(filePath).pipe(fs.createWriteStream('../node_modules/universal/testData/deviceReporter/installedSolutions.json'));
 
 	response.writeHead(200, {"Content-Type": "text/html"});
-	response.write("Device information successfully set!");
+    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Device information successfully set!</p>");
+    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 	response.end();	
 }
 
@@ -178,14 +179,16 @@ function selectMM (response, postData) {
 					saveModifiedPreferences(token, preferences['preferences'], "matchmaker successfully selected", response);
 				} else {
 					response.writeHead(200, {"Content-Type": "text/html"});
-					response.write("Error on fetching preferences");
+                    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching preferences!</p>");
+                    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 					response.end();
 				}
 			});
 
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -209,7 +212,11 @@ function logging(response) {
 			console.log ("logging results: " + stdout);
 			
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("logging results: " + stdout+ " Error: " + stderr);
+			response.write("<html><title>Logging results</title><body><p>Logging results: " + stdout + "</p>");
+			if (stderr) {
+			    response.write("<p>Error: " + stderr + "</p>");
+			}
+			response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();	
     });	
 	});
@@ -240,7 +247,8 @@ function snapshotToLog(response) {
 							} else {
 								console.log("Logfile saved!");
 								response.writeHead(200, {"Content-Type": "text/html"});
-								response.write("Log successfully saved in directory pilotsConfig/logs");
+                                response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Log successfully saved in directory pilotsConfig/logs!</p>");
+                                response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 								response.end();
 							}
 						});
@@ -253,7 +261,8 @@ function snapshotToLog(response) {
 
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -280,13 +289,15 @@ function snapshotToPrefs(response) {
 					});
 				} else {
 					response.writeHead(200, {"Content-Type": "text/html"});
-					response.write("Error on fetching preferences");
+                    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching preferences!</p>");
+                    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 					response.end();
 				}
 			});
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -328,7 +339,8 @@ function saveModifiedPreferences(token, preferencesObject, usrMsg, response) {
 		});
 		res.on('end', function(){
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write(usrMsg);
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>" + usrMsg + "</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		});
 	});
