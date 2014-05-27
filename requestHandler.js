@@ -204,7 +204,7 @@ function logging(response) {
 		var logScript = path.join(process.cwd(), '../linux/LogLocalSettings.sh');
 	
 	else 
-		var logScript = path.join(process.cwd(), '../windows/LogLocalSettings.cmd');
+		var logScript = path.join(process.cwd(), './LogLocalSettings.cmd');
 		
 	fs.exists(logScript, function (exists) {
 		var child = exec(logScript, function (error, stdout, stderr) {
