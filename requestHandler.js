@@ -1,7 +1,7 @@
 /*!
     GPII pilotsConfig
 
-    Copyright 2014 Technische Universit‰t Dresden (TUD)
+    Copyright 2014 Technische Universit√§t Dresden (TUD)
     Copyright 2014 Raising the Floor - International (RtF)
 
     Licensed under the New BSD license. You may not use this file except in
@@ -24,55 +24,60 @@ var fs = require('fs');
 function start(response, postData){
 	console.log("Request handler 'start' was called");
 	//TODO: load html from template (split logic from content)
-	var body = '<html>'+
+	var body = '<!DOCTYPE html><html lang="en">'+
 	 '<head>'+
 	 '<meta http-equiv="Content-Type" content="text/html; '+
 	 'charset=UTF-8" />'+
+	 '<title>Cloud4all Pilots Configuration Tool</title>'+
 	 '</head>'+
 	 '<body>'+
-	 '<h1>Pilots Configuration Panel </h1>'+
+	 '<h1>Pilots Configuration Panel</h1>'+
 	 '<h2>Select Matchmaker</h2>'+
-	 '<p>Note: Cloud4all/GPII server must be started to select a Matchmaker<br></p>'+
+	 '<p>Note: Cloud4all/GPII server must be started before selecting a Matchmaker.</p>'+
 	 '<form action="/selectMM" method="post">'+
-	 '<p>For auto-configuration scenario:<br>'+
-	 '<input type="radio" name="matchmaker" checked="checked" value="flat">Rule-based Matchmaker (without solution selection option)<br>'+
-	 '<input type="radio" name="matchmaker" value="statistical">Statistical Matchmaker<br>'+
-	 '</p>'+
+	 '<fieldset><legend>Select Matchmaker</legend>'+
+	 'For auto-configuration scenario:<br>'+
+	 '<input type="radio" name="matchmaker" id="mm_default" checked="checked" value="flat"><label for="mm_default">Rule-based Matchmaker (without solution selection option)</label><br>'+
+	 '<input type="radio" name="matchmaker" id="mm_stmm" value="statistical"><label for="mm_stmm">Statistical Matchmaker</label><br>'+
 //	'<p>For demo solution selection scenario:<br>'+
 //	'<input type="radio" name="matchmaker" value="ruleBased">Rule-based Matchmaker<br>'+
 //	'</p>'+
-	 '<input type="submit" value="Set Matchmaker strategy" />'+
-	 '</form></p>'+
+	 '<input type="submit" value="Set Matchmaker strategy" /></fieldset>'+
+	 '</form>'+
 	 // sanpshot to prefs
-	 '<h2>Snapshot prefs</h2>'+
+	 '<h2>Snapshot preferences</h2>'+
 	 '<form action="/snapshotToPrefs" method="post">'+
-	 '<input type="submit" value="Snapshot" />'+
-	 '</form></p>	'+
+	 '<fieldset><legend id="snapshottoserver">Snapshot local settings to server</legend>'+
+	 '<input type="submit" value="Snapshot" aria-labelledby="snapshottoserver" />'+
+	 '</fieldset></form>'+
 	 // log to device
-	 '<h2>Log prefs</h2>'+
+	 '<h2>Log preferences on local system</h2>'+
 	 '<form action="/logging" method="post">'+
+	 '<fieldset><legend id="writelocalsettingslog">Log current/settings on local file system</legend>'+
 	 '<input type="submit" value="Logging" />'+
-	 '</form></p>	'+	 
+	 '</fieldset></form>'+
 	 // select device spec
 	 '<h2>Select Device Specification</h2>'+
 	 '<form action="/setDeviceinfo" method="post">'+
-	 '<p>For platform A/B scenario:<br>'+
-	 '<input type="radio" name="device" value="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux <br>'+
-	 '<input type="radio" name="device" value="platformAB_onWindows_Supernova">Windows (SuperNova screen reader and magnifier) or Linux <br><br>'+
+	 '<fieldset><legend>Device configuration</legend>'+
+	 '<fieldset><legend>For platform A/B scenario</legend>'+
+	 '<input type="radio" name="device" id="platformAB_onWindows_NVDA" value="platformAB_onWindows_NVDA"><label for="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux</label><br>'+
+	 '<input type="radio" name="device" id="platformAB_onWindows_Supernova" value="platformAB_onWindows_Supernova"><label for="platformAB_onWindows_Supernova">Windows (SuperNova screen reader and magnifier) or Linux</label><br>'+
 	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+
 	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+
-	 '</p>'+
-	 '<p>For Demos:<br>'+
-	 '<input type="radio" name="device" value="demo_SmartHouse">SmartHouse<br>'+
-	 '<input type="radio" name="device" value="demo_Maavis">Maavis<br>'+
-	 '<input type="radio" name="device" value="demo_GoogleChrome">Google Chrome<br>'+
-	 '<input type="radio" name="device" value="demo_Library">WebAnywhere<br>'+
+	 '</fieldset>'+
+	 '<fieldset><legend>For Demos</legend>'+
+	 '<input type="radio" name="device" id="demo_SmartHouse" value="demo_SmartHouse"><label for="demo_SmartHouse">SmartHouse</label><br>'+
+	 '<input type="radio" name="device" id="demo_Maavis" value="demo_Maavis"><label for="demo_Maavis">Maavis</label><br>'+
+	 '<input type="radio" name="device" id="demo_GoogleChrome" value="demo_GoogleChrome"><label for="demo_GoogleChrome">Google Chrome extension</label><br>'+
+	 '<input type="radio" name="device" id="demo_Library" value="demo_Library"><label for="demo_Library">WebAnywhere</label><br>'+
 //	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
-	 '</p>'+
-	 '<p>Set device specification to default:<br>'+
-	 '<input type="radio" name="device" value="installedSolutions">Default<br>'+
-	 '</p>'+
+	 '</fieldset>'+
+	 '<fieldset><legend>Default configuration</legend>'+
+	 '<input type="radio" name="device" id="installedSolutions" value="installedSolutions"><label for="installedSolutions">Set device specification to default</label>'+
+	 '</fieldset>'+
 	 '<input type="submit" value="Set device configuration" />'+
+	 '</fieldset>'+
 	 '</form>'+
 	 // feedback pages 
 	 '<h2>Proposing a new Solution - Feedback</h2>'+
@@ -86,19 +91,19 @@ function start(response, postData){
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackGerman.html" target="_blank">SuperNova feedback German</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackSpanish.html" target="_blank">SuperNova feedback Spain</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackGreek.html" target="_blank">SuperNova feedback Greek</a><br>'+	 
-	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackEnglish.html" target="_blank">SuperNova feedback Englisch</a><br'+
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/SuperNova/RBMMFeedbackEnglish.html" target="_blank">SuperNova feedback Englisch</a><br>'+
 	 '</p>'+
 	 '<p>WebAnywhere:<br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackGerman.html" target="_blank">WebAnywhere feedback German</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackSpanish.html" target="_blank">WebAnywhere feedback Spain</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackGreek.html" target="_blank">WebAnywhere feedback Greek</a><br>'+	 
-	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackEnglish.html" target="_blank">WebAnywhere feedback Englisch</a><br'+	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/WebAnywhere/RBMMFeedbackEnglish.html" target="_blank">WebAnywhere feedback Englisch</a><br>'+	 
 	 '</p>'+
 	 '<p>ORCA:<br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackGerman.html" target="_blank">ORCA feedback German</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackSpanish.html" target="_blank">ORCA feedback Spain</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackGreek.html" target="_blank">ORCA feedback Greek</a><br>'+	 
-	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackEnglish.html" target="_blank">ORCA feedback Englisch</a><br'+	 	 
+	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/ORCA/RBMMFeedbackEnglish.html" target="_blank">ORCA feedback Englisch</a><br>'+	 	 
 	 '</p>'+	 
 	 '</body>'+
 	 '</html>';
@@ -120,7 +125,8 @@ function setDeviceinfo(response, postData){
 	fs.createReadStream(filePath).pipe(fs.createWriteStream('../node_modules/universal/testData/deviceReporter/installedSolutions.json'));
 
 	response.writeHead(200, {"Content-Type": "text/html"});
-	response.write("Device information successfully set!");
+    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Device information successfully set!</p>");
+    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 	response.end();	
 }
 
@@ -173,14 +179,16 @@ function selectMM (response, postData) {
 					saveModifiedPreferences(token, preferences['preferences'], "matchmaker successfully selected", response);
 				} else {
 					response.writeHead(200, {"Content-Type": "text/html"});
-					response.write("Error on fetching preferences");
+                    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching preferences!</p>");
+                    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 					response.end();
 				}
 			});
 
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -204,7 +212,11 @@ function logging(response) {
 			console.log ("logging results: " + stdout);
 			
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("logging results: " + stdout+ " Error: " + stderr);
+			response.write("<html><title>Logging results</title><body><p>Logging results: " + stdout + "</p>");
+			if (stderr) {
+			    response.write("<p>Error: " + stderr + "</p>");
+			}
+			response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();	
     });	
 	});
@@ -235,7 +247,8 @@ function snapshotToLog(response) {
 							} else {
 								console.log("Logfile saved!");
 								response.writeHead(200, {"Content-Type": "text/html"});
-								response.write("Log successfully saved in directory pilotsConfig/logs");
+                                response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Log successfully saved in directory pilotsConfig/logs!</p>");
+                                response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 								response.end();
 							}
 						});
@@ -248,7 +261,8 @@ function snapshotToLog(response) {
 
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -275,13 +289,15 @@ function snapshotToPrefs(response) {
 					});
 				} else {
 					response.writeHead(200, {"Content-Type": "text/html"});
-					response.write("Error on fetching preferences");
+                    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching preferences!</p>");
+                    response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 					response.end();
 				}
 			});
 		} else {
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write("Error on fetching user token");
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Error on fetching user token!</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		}
 	});
@@ -323,7 +339,8 @@ function saveModifiedPreferences(token, preferencesObject, usrMsg, response) {
 		});
 		res.on('end', function(){
 			response.writeHead(200, {"Content-Type": "text/html"});
-			response.write(usrMsg);
+            response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>" + usrMsg + "</p>");
+            response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 			response.end();
 		});
 	});
