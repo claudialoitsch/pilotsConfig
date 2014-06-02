@@ -3,6 +3,7 @@
 
     Copyright 2014 Technische Universität Dresden (TUD)
     Copyright 2014 Raising the Floor - International (RtF)
+    Copyright 2014 Hochschule der Median (HdM)
 
     Licensed under the New BSD license. You may not use this file except in
     compliance with this License.
@@ -63,6 +64,8 @@ function start(response, postData){
 	 '<fieldset><legend>For platform A/B scenario</legend>'+
 	 '<input type="radio" name="device" id="platformAB_onWindows_NVDA" value="platformAB_onWindows_NVDA"><label for="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux</label><br>'+
 	 '<input type="radio" name="device" id="platformAB_onWindows_Supernova" value="platformAB_onWindows_Supernova"><label for="platformAB_onWindows_Supernova">Windows (SuperNova screen reader and magnifier) or Linux</label><br>'+
+	 '<input type="radio" name="device" id="platformAB_onWindows_NoMagnification" value="platformAB_onWindows_NoMagnification"><label for="platformAB_onWindows_NoMagnification">Activate screen readers but no magnification (Windows and Linux)</label><br>'+
+	 '<input type="radio" name="device" id="platformAB_onWindows_NoScreenReaders" value="platformAB_onWindows_NoScreenReaders"><label for="platformAB_onWindows_NoScreenReaders">Activate magnification but no screen readers (Windows and Linux)</label><br>'+
 	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+
 	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+
 	 '</fieldset>'+
