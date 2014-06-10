@@ -3,7 +3,7 @@
 
     Copyright 2014 Technische Universität Dresden (TUD)
     Copyright 2014 Raising the Floor - International (RtF)
-    Copyright 2014 Hochschule der Median (HdM)
+    Copyright 2014 Hochschule der Medien (HdM)
 
     Licensed under the New BSD license. You may not use this file except in
     compliance with this License.
@@ -49,6 +49,7 @@ function start(response, postData){
 	 '<h2>Snapshot preferences</h2>'+
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<fieldset><legend id="snapshottoserver">Snapshot local settings to server</legend>'+
+	 createSnapshotterSelection()+
 	 '<input type="submit" value="Snapshot" aria-labelledby="snapshottoserver" />'+
 	 '</fieldset></form>'+
 	 // log to device
@@ -231,7 +232,7 @@ function snapshotToLog(response) {
 	var timestamp = data.getDate()+'.'+data.getMonth()+'_time_'+data.getHours()+'.'+data.getMinutes();
 	var path = './logs/';
 	var log = { };
-	//read the token of the currently logged in user
+	//Read the currently logged in token
 	getCurrentToken(function (token) {
 		if (token) {
 		
@@ -271,22 +272,25 @@ function snapshotToLog(response) {
 	});
 };
 
-function snapshotToPrefs(response) {
-	//read the token of the currently logged in user
+function snapshotToPrefs(response, postData) {
+	//Read the currently logged in token
+	var parsedPost = querystring.parse(postData);
 	getCurrentToken(function (token) {
 		if (token) {
 			token = token.replace(/\s/, "");
 			token = token.replace(/\[\"/, "");
 			token = token.replace(/\"\]/, "");
-			//if theres a user logged in, get that users preferences
+			//If a token is logged in, get that token's preferences
 			getPreferences(token, function (reply) {
 				var preferences = JSON.parse(reply);
 				if (preferences && preferences['preferences']) {
-					//get and add the snapshotted settings to the
+					//Get and add the snapshotted settings to the preference set
 					getSnapshot(function (reply) {
 						var snapshotted = JSON.parse(reply);
 						for (solution in snapshotted) {
-							preferences['preferences'][solution] = snapshotted[solution];							
+							if ((parsedPost) && isAllowedSnapshotSolution(solution, parsedPost)) {
+								preferences['preferences'][solution] = snapshotted[solution];
+							};
 						};
 						saveModifiedPreferences(token, preferences['preferences']	, "Snapshot saved to preferences server", response);
 					});
@@ -361,3 +365,97 @@ exports.getFeedback = getFeedback;
 exports.logging = logging;
 // outdated logging
 //exports.snapshotToLog = snapshotToLog;
+
+
+function isAllowedSnapshotSolution(solution, parsedPost) {
+	for (key in parsedPost) {
+		if ((solution.indexOf(key) > -1) && (parsedPost[key] == 1)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function createSnapshotterSelection() {
+	var result = "";
+	for (i in snapshotterSolutionsList) {
+		var solution = snapshotterSolutionsList[i];
+		var id = solution["id"];
+		var name = solution["name"];
+		if (!name) { name = id; }
+		result += '<input type="checkbox" id="SnapShotter_' + id + '" name="' + id + '" value="1"><label for="SnapShotter_' + id + '">' + name + '</label><br>';
+	}
+	return result;
+}
+
+snapshotterSolutionsList = 
+[
+    {
+        "id": "org.nvda-project",
+		"name": "NVDA"
+    },
+    {
+        "id": "com.microsoft.windows.magnifier",
+        "name": "Windows Built-in Screen Magnifier"
+    },
+    {
+        "id": "com.microsoft.windows.highContrast",
+        "name": "Windows High Contrast"
+    },
+    {
+        "id": "com.microsoft.windows.cursors",
+        "name": "Windows Cursors"
+    },
+    {
+        "id": "com.microsoft.windows.mouseTrailing",
+        "name": "Windows Mouse Trailing"
+    },
+    {
+        "id": "com.microsoft.windows.onscreenKeyboard",
+        "name": "Windows Built-in Onscreen Keyboard"
+    },
+    {
+        "id": "org.gnome.orca",
+        "name": "ORCA Screen Reader"
+    },
+    {
+        "id": "org.gnome.desktop.a11y.magnifier",
+        "name": "GNOME Shell Magnifier"
+    },
+    {
+        "id": "org.gnome.desktop.interface",
+        "name": "GNOME Interface Settings (font size, cursor size)"
+    },
+    {
+        "id": "org.gnome.shell.overrides",
+        "name": "GNOME Shell overrides"
+    },
+    {
+        "id": "org.gnome.desktop.wm.preferences",
+        "name": "GNOME desktop Window Manager preferences"
+    },
+    {
+        "id": "org.gnome.nautilus",
+        "name": "GNOME Nautilus Settings"
+    },
+    {
+        "id": "org.gnome.desktop.a11y.keyboard",
+        "name": "GNOME Shell Keyboard Settings"
+    },
+    {
+        "id": "org.gnome.desktop.a11y.applications.onscreen-keyboard",
+        "name": "GNOME Assistive Technology - Screen Keyboard"
+    },
+    {
+        "id": "org.alsa-project",
+        "name": "Linux System Volume (ALSA)"
+    },
+    {
+        "id": "org.freedesktop.xrandr",
+        "name": "XRandR (for brightness, screen height and screen width)"
+    },
+    {
+        "id": "org.chrome.cloud4chrome",
+        "name": "Cloud4Chrome"
+    }
+];
