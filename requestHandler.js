@@ -45,7 +45,7 @@ function start(response, postData){
 //	'</p>'+
 	 '<input type="submit" value="Set Matchmaker strategy" /></fieldset>'+
 	 '</form>'+
-	 // sanpshot to prefs
+	 // snapshot to prefs
 	 '<h2>Snapshot preferences</h2>'+
 	 '<form action="/snapshotToPrefs" method="post">'+
 	 '<fieldset><legend id="snapshottoserver">Snapshot local settings to server</legend>'+
@@ -59,32 +59,29 @@ function start(response, postData){
 	 '<input type="submit" value="Logging" />'+
 	 '</fieldset></form>'+
 	 // select device spec
-	 '<h2>Select Device Specification</h2>'+
-	 '<form action="/setDeviceinfo" method="post">'+
-	 '<fieldset><legend>Device configuration</legend>'+
+	 '<h2>Select Device Specification</h2><div id="selectDeviceSpec" style="float: none; clear: both;">'+
+	 '<form action="/setDetailedDeviceinfo" method="post" style="width: 50%; float: left;">'+
 	 '<fieldset><legend>For platform A/B scenario</legend>'+
-	 '<input type="radio" name="device" id="platformAB_onWindows_NVDA" value="platformAB_onWindows_NVDA"><label for="platformAB_onWindows_NVDA">Windows (NVDA and Windows Magnifier) or Linux</label><br>'+
-	 '<input type="radio" name="device" id="platformAB_onWindows_Supernova" value="platformAB_onWindows_Supernova"><label for="platformAB_onWindows_Supernova">Windows (SuperNova screen reader and magnifier) or Linux</label><br>'+
-	 '<input type="radio" name="device" id="platformAB_onWindows_NoMagnification" value="platformAB_onWindows_NoMagnification"><label for="platformAB_onWindows_NoMagnification">Activate screen readers but no magnification (Windows and Linux)</label><br>'+
-	 '<input type="radio" name="device" id="platformAB_onWindows_NoScreenReaders" value="platformAB_onWindows_NoScreenReaders"><label for="platformAB_onWindows_NoScreenReaders">Activate magnification but no screen readers (Windows and Linux)</label><br>'+
-	// '<input type="radio" name="device" value="platformAB_onAndroid_TalkBack">Android (TalkBack)<br>'+
-	// '<input type="radio" name="device" value="platformAB_onAndroid_MobileAccessibility">Android (TalkBack)<br>'+
+	 createDetailedDeviceSelection()+
+	 '<input type="submit" value="Set device configuration" />'+
 	 '</fieldset>'+
+	 '</form>\n'+
+
+	 '<form action="/setDeviceinfo" method="post" style="width: 50%; float: left;">'+
 	 '<fieldset><legend>For Demos</legend>'+
 	 '<input type="radio" name="device" id="demo_SmartHouse" value="demo_SmartHouse"><label for="demo_SmartHouse">SmartHouse</label><br>'+
 	 '<input type="radio" name="device" id="demo_Maavis" value="demo_Maavis"><label for="demo_Maavis">Maavis</label><br>'+
 	 '<input type="radio" name="device" id="demo_GoogleChrome" value="demo_GoogleChrome"><label for="demo_GoogleChrome">Google Chrome extension</label><br>'+
 	 '<input type="radio" name="device" id="demo_Library" value="demo_Library"><label for="demo_Library">WebAnywhere</label><br>'+
 //	 '<input type="radio" name="device" value="demo_MultipleSolutions">Mulitple solutions in computer lab<br>'+
-	 '</fieldset>'+
+	 '</fieldset>\n'+
 	 '<fieldset><legend>Default configuration</legend>'+
 	 '<input type="radio" name="device" id="installedSolutions" value="installedSolutions"><label for="installedSolutions">Set device specification to default</label>'+
 	 '</fieldset>'+
 	 '<input type="submit" value="Set device configuration" />'+
-	 '</fieldset>'+
-	 '</form>'+
+	 '</form>\n</div>\n'+
 	 // feedback pages 
-	 '<h2>Proposing a new Solution - Feedback</h2>'+
+	 '<h2 style="clear: left">Proposing a new Solution - Feedback</h2>'+
 	 '<p>NVDA:<br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackGerman.html" target="_blank">NVDA feedback German</a><br>'+
 	 '<a href="http://wwwpub.zih.tu-dresden.de/~loitsch/feedback/NVDA/RBMMFeedbackSpanish.html" target="_blank">NVDA feedback Spain</a><br>'+
@@ -116,6 +113,50 @@ function start(response, postData){
 	response.end();
 }
 
+function createDetailedDeviceSelection() {
+	var result = "";
+	for (i in snapshotterSolutionsList) {
+		var solution = snapshotterSolutionsList[i];
+		var id = solution["id"];
+		var name = solution["name"];
+		if (!name) { name = id; }
+		result += '<input type="checkbox" id="DeviceReporter_' + id + '" name="' + id + '" value="1"><label for="DeviceReporter_' + id + '">' + name + '</label><br>\n';
+	}
+	return result;
+}
+
+function setDetailedDeviceinfo(response, postData){
+	var parsedPost = querystring.parse(postData);
+	// Select solutions
+	var multipleSolutionsPresent = false;
+	var deviceText = '[';
+	for (i in snapshotterSolutionsList) {
+		var id = snapshotterSolutionsList[i]["id"];
+		if (parsedPost[id] == 1) {
+			if (multipleSolutionsPresent) { deviceText += ',' }
+			deviceText += '{"id": "' + id + '"}'
+			multipleSolutionsPresent = true;
+		}
+	}
+	deviceText += ']';
+	// Write installedSolutions.json
+	fs.writeFile('../node_modules/universal/testData/deviceReporter/installedSolutions.json', deviceText, function(err) {
+		if (err) {
+			response.writeHead(200, {"Content-Type": "text/html"});
+			response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>" + err + "</p>");
+			response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
+			response.end();	
+		} else {
+			response.writeHead(200, {"Content-Type": "text/html"});
+			response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Device information successfully set!</p>");
+			response.write("<p>(Device info: " + deviceText + ")</p>");
+			response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
+			response.end();	
+		}
+	});
+}
+
+
 function setDeviceinfo(response, postData){
 	var device = querystring.parse(postData)["device"];
 	if (device == "installedSolutions"){
@@ -129,10 +170,11 @@ function setDeviceinfo(response, postData){
 	fs.createReadStream(filePath).pipe(fs.createWriteStream('../node_modules/universal/testData/deviceReporter/installedSolutions.json'));
 
 	response.writeHead(200, {"Content-Type": "text/html"});
-    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Device information successfully set!</p>");
+    response.write("<html><title>Pilots Configuration Tool Feedback</title><body><p>Device information successfully set! (" + device + ")</p>");
     response.write("<p><a href='javascript:history.go(-1)'>Go back to the pilotsConfig tool</a>.</p></body></html>");
 	response.end();	
 }
+
 
 function getJSONRequest (url, callback) {
 	var	reply = "";
@@ -359,6 +401,7 @@ function saveModifiedPreferences(token, preferencesObject, usrMsg, response) {
 
 exports.start = start;
 exports.selectMM = selectMM;
+exports.setDetailedDeviceinfo = setDetailedDeviceinfo;
 exports.setDeviceinfo = setDeviceinfo;
 exports.snapshotToPrefs = snapshotToPrefs;
 exports.getFeedback = getFeedback;
@@ -383,7 +426,7 @@ function createSnapshotterSelection() {
 		var id = solution["id"];
 		var name = solution["name"];
 		if (!name) { name = id; }
-		result += '<input type="checkbox" id="SnapShotter_' + id + '" name="' + id + '" value="1"><label for="SnapShotter_' + id + '">' + name + '</label><br>';
+		result += '<input type="checkbox" id="SnapShotter_' + id + '" name="' + id + '" value="1"><label for="SnapShotter_' + id + '">' + name + '</label><br>\n';
 	}
 	return result;
 }
