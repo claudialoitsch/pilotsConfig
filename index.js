@@ -1,7 +1,7 @@
 /*!
     GPII pilotsConfig
 
-    Copyright 2014 Technische Universit‰t Dresden (TUD)
+    Copyright 2014 Technische Universit√§t Dresden (TUD)
     Copyright 2014 Raising the Floor - International (RtF)
 
     Licensed under the New BSD license. You may not use this file except in
@@ -25,6 +25,7 @@ var handle = {}
 handle["/"] = requestHandlers.start;
 handle["/start"] = requestHandlers.start;
 handle["/setDeviceinfo"] = requestHandlers.setDeviceinfo;
+handle["/setDetailedDeviceinfo"] = requestHandlers.setDetailedDeviceinfo;
 handle["/selectMM"] = requestHandlers.selectMM;
 handle["/snapshotToPrefs"] = requestHandlers.snapshotToPrefs;
 handle["/getFeedback"] = requestHandlers.getFeedback;
@@ -34,7 +35,5 @@ handle["/logging"] = requestHandlers.logging;
 
 
 
-
 // injecting the route function of router module into server module:
 server.start(router.route, handle);
-
